@@ -35,16 +35,57 @@ public class TodosTest {
         assertArrayEquals(expected, actual);
     }
 
-    @Test
-    public void shouldSearchMatchingTasks() {
-        Todos todos = new Todos();
-        todos.add(new SimpleTask(1, "Купить молоко"));
-        todos.add(new Epic(2, new String[]{"Хлеб", "Яйца"}));
-        todos.add(new Meeting(3, "Встреча с банком", "Нетология", "Завтра"));
-        todos.add(new SimpleTask(4, "Купить яйца"));
 
-        Task[] expected = { new SimpleTask(1, "Купить молоко") };
-        Task[] actual = todos.search("молоко");
+    @Test
+    public void shouldFindMultipleTasksWhenSearching() {
+        // 1) Находится несколько задач
+        SimpleTask task1 = new SimpleTask(1, "Купить молоко");
+        Epic task2 = new Epic(2, new String[]{"Починить кран", "Купить яйца"});
+        Meeting task3 = new Meeting(3, "Совещание", "НетоБанк", "10:00");
+
+        Todos todos = new Todos();
+        todos.add(task1);
+        todos.add(task2);
+        todos.add(task3);
+
+        Task[] expected = { task1, task2 };
+        Task[] actual = todos.search("Купить");
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldFindExactlyOneTaskWhenSearching() {
+        // 2) Находится ровно одна задача
+        SimpleTask task1 = new SimpleTask(1, "Купить молоко");
+        Epic task2 = new Epic(2, new String[]{"Починить кран", "Купить яйца"});
+        Meeting task3 = new Meeting(3, "Совещание", "НетоБанк", "10:00");
+
+        Todos todos = new Todos();
+        todos.add(task1);
+        todos.add(task2);
+        todos.add(task3);
+
+        Task[] expected = { task3 };
+        Task[] actual = todos.search("НетоБанк");
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldFindZeroTasksWhenSearching() {
+        // 3) Находится 0 задач (ни одна не подходит)
+        SimpleTask task1 = new SimpleTask(1, "Купить молоко");
+        Epic task2 = new Epic(2, new String[]{"Починить кран", "Купить яйца"});
+        Meeting task3 = new Meeting(3, "Совещание", "НетоБанк", "10:00");
+
+        Todos todos = new Todos();
+        todos.add(task1);
+        todos.add(task2);
+        todos.add(task3);
+
+        Task[] expected = {};
+        Task[] actual = todos.search("Самолет");
 
         assertArrayEquals(expected, actual);
     }
